@@ -1,0 +1,64 @@
+/* รีเซ็ตหน้าจอ */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#000;
+}
+
+/* ฉาก AR เต็มจอ */
+a-scene{
+    position:fixed;
+    inset:0;
+}
+
+/* กล่องข้อความด้านบน */
+#status{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+
+    background:rgba(0,0,0,.65);
+    color:#fff;
+
+    padding:12px 18px;
+    border-radius:14px;
+
+    font-size:15px;
+    z-index:999;
+    backdrop-filter:blur(10px);
+}
+
+/* ปุ่มเริ่ม */
+#startBtn{
+    position:fixed;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+
+    border:none;
+    border-radius:999px;
+
+    padding:14px 28px;
+
+    background:#2563eb;
+    color:white;
+
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+
+    z-index:999;
+}
+
+#startBtn:hover{
+    background:#1d4ed8;
+}

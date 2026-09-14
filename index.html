@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Random Reward</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+    <!-- JavaScript -->
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Status -->
+    <div id="status">Ready to scan</div>
+
+    <!-- Start Button -->
+    <button id="startBtn">Start AR</button>
+
+    <!-- AR Scene -->
+    <a-scene embedded vr-mode-ui="enabled: false">
+
+        <a-camera position="0 0 0"></a-camera>
+
+        <a-image
+            id="reward"
+            position="0 0 -2"
+            width="1.4"
+            height="1.4"
+            visible="false">
+        </a-image>
+
+    </a-scene>
+
+</body>
+</html>
