@@ -6,31 +6,64 @@ const reward = document.getElementById("reward");
 
 button.addEventListener("click", async () => {
 
-    status.innerText = "กำลังสุ่ม...";
+    status.innerText = "กำลังเชื่อมต่อระบบ...";
     button.disabled = true;
 
-    try{
+    try {
 
-        const response = await fetch(API);
+        const response = await fetch(API, {
+            method: "GET",
+            redirect: "follow"
+        });
+
+        console.log("Response status:", response.status);
+        console.log("Response URL:", response.url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error ${response.status}`);
+        }
+
         const data = await response.json();
 
-        if(!data.success){
-            status.innerText = "ครบ 30 คนแล้ว";
+        console.log("API Data:", data);
+
+        if (!data.success) {
+
+            if (data.message === "FULL") {
+                status.innerText = "สิทธิ์ครบ 30 คนแล้ว";
+            } else {
+                status.innerText = "ระบบขัดข้อง: " + data.message;
+            }
+
+            button.disabled = false;
             return;
         }
 
-        reward.setAttribute("src", `images/${data.image}.png`);
-        reward.setAttribute("visible", true);
+        const imageName = data.image;
 
-        status.innerText = `คุณได้รับภาพ ${data.image}`;
+        reward.setAttribute(
+            "src",
+            `images/${imageName}.png`
+        );
+
+        reward.setAttribute(
+            "visible",
+            "true"
+        );
+
+        status.innerText =
+            `คุณได้รับภาพ ${imageName}`;
 
         button.style.display = "none";
 
-    }catch(err){
+    } catch (error) {
 
-        status.innerText = "เชื่อมต่อระบบไม่ได้";
-        console.error(err);
+        console.error("API ERROR:", error);
 
+        status.innerText =
+            "เชื่อมต่อระบบไม่ได้";
+
+        button.disabled = false;
     }
 
 });
