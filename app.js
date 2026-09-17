@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/AKfycbx4cj-jOYBY2k7l5TgVgH3Xt8oJpufFTKkn4zGAx8Umq5a7Q4od6FjU3hdPMlRHmpMXUg/exec";
+const API = "https://script.google.com/macros/s/AKfycbyeD0pjO7uSQmnhjRBr1qFvhwsnubtXdM4IYNk0U-MQcfDNPO6O48mfUnuWiMslgaVy/exec";
 
 const status = document.getElementById("status");
 const button = document.getElementById("startBtn");
