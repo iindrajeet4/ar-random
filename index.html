@@ -1,63 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>AR Random Reward</title>
-
     <link rel="stylesheet" href="style.css">
 
+    <!-- A-Frame และ MindAR สำหรับ WebAR -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
     <script src="app.js" defer></script>
 </head>
-
 <body>
 
-    <div id="status">
-        Ready
-    </div>
+    <div id="status">กรุณากดปุ่มเพื่อเริ่มสุ่มรางวัล AR</div>
 
     <button id="startBtn">
         Start AR
     </button>
 
-    <!-- Debug image -->
-    <img
-        id="debugImage"
-        style="
-            position:fixed;
-            top:100px;
-            left:50%;
-            transform:translateX(-50%);
-            width:250px;
-            height:250px;
-            object-fit:contain;
-            z-index:1000;
-            display:none;
-        "
-    >
+    <!-- AR Scene -->
+    <a-scene 
+        mindar-image="imageTargetSrc: data://no-marker; autoStart: false;" 
+        color-space="sRGB" 
+        renderer="colorManagement: true, physicallyCorrectLights" 
+        vr-mode-ui="enabled: false" 
+        device-orientation-permission-ui="enabled: false">
+        
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-scene
-        embedded
-        vr-mode-ui="enabled: false"
-        renderer="colorManagement: true">
-
-        <a-camera
-            position="0 0 0">
-        </a-camera>
-
-        <a-image
-            id="reward"
-            position="0 0 -2"
-            width="1.4"
-            height="1.4"
-            visible="false">
-        </a-image>
-
+        <!-- จุดแสดงผลภาพ AR ลอยอยู่ด้านหน้ากล้อง -->
+        <a-entity id="ar-target" position="0 0 -1.5">
+            <a-image
+                id="reward"
+                position="0 0 0"
+                width="1"
+                height="1"
+                visible="false">
+            </a-image>
+        </a-entity>
     </a-scene>
 
 </body>
-
 </html>
