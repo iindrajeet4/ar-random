@@ -25,7 +25,7 @@ button.addEventListener("click", async () => {
         }
 
         const imageName = String(data.image).trim().toUpperCase();
-        const imagePath = `./images/${imageName}.png`; // ปรับนามสกุลไฟล์ตามจริง เช่น .jpg หรือ .png
+        const imagePath = `./images/${imageName}.jpg`; // ปรับนามสกุลไฟล์ตามจริง เช่น .jpg หรือ .png
 
         const testImage = new Image();
         testImage.onload = function () {
