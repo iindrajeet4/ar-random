@@ -6,7 +6,7 @@ const reward = document.getElementById("reward");
 const sceneEl = document.querySelector('a-scene');
 
 button.addEventListener("click", async () => {
-    status.innerText = "กำลังสุ่มรางวัล...";
+    status.innerText = "Random Group...";
     button.disabled = true;
 
     try {
@@ -19,13 +19,13 @@ button.addEventListener("click", async () => {
         console.log("API Data:", data);
 
         if (!data.success) {
-            status.innerText = (data.message === "FULL") ? "ครบ 30 คนแล้ว" : data.message;
+            status.innerText = (data.message === "FULL") ? "30 People completed" : data.message;
             button.disabled = false;
             return;
         }
 
         const imageName = String(data.image).trim().toUpperCase();
-        const imagePath = `./images/${imageName}.jpg`; // ปรับนามสกุลไฟล์ตามจริง เช่น .jpg หรือ .png
+        const imagePath = `./images/${imageName}.png`; // ปรับนามสกุลไฟล์ตามจริง เช่น .jpg หรือ .png
 
         const testImage = new Image();
         testImage.onload = function () {
@@ -38,13 +38,13 @@ button.addEventListener("click", async () => {
             reward.setAttribute("src", imagePath);
             reward.setAttribute("visible", "true");
 
-            status.innerText = `ยินดีด้วย! คุณได้รับภาพรางวัล: ${imageName}`;
+            status.innerText = `You got this!: ${imageName}`;
             button.style.display = "none";
         };
 
         testImage.onerror = function () {
             console.error("IMAGE LOAD FAILED:", imagePath);
-            status.innerText = `ไม่พบไฟล์ภาพ ${imageName}`;
+            status.innerText = `No images found ${imageName}`;
             button.disabled = false;
         };
 
@@ -52,7 +52,7 @@ button.addEventListener("click", async () => {
 
     } catch (error) {
         console.error("API ERROR:", error);
-        status.innerText = "ไม่สามารถเชื่อมต่อระบบสุ่มได้";
+        status.innerText = "Unable to connect to the random system.";
         button.disabled = false;
     }
 });
