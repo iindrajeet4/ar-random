@@ -43,28 +43,17 @@ button.addEventListener("click", async () => {
         const imageName = String(data.image).trim().toUpperCase();
         const imagePath = `./images/${imageName}.png`;
 
-        const testImage = new Image();
-        testImage.onload = function () {
-            console.log("IMAGE LOADED:", imagePath);
+        console.log("Image path to load:", imagePath);
 
-            // เริ่มเปิดกล้องและระบบ AR หลังจากสุ่มสำเร็จ
-            sceneEl.systems["mindar-image-system"].start();
+        // 1. สั่งเปิดกล้องและระบบ AR ทันทีที่สุ่มข้อมูลสำเร็จ (ไม่รอโหลดรูปภาพ)
+        sceneEl.systems["mindar-image-system"].start();
 
-            // แสดงรูปภาพใน A-Frame
-            reward.setAttribute("src", imagePath);
-            reward.setAttribute("visible", "true");
+        // 2. ตั้งค่ารูปภาพเข้าไปใน A-Frame รอด้านหน้ากล้อง
+        reward.setAttribute("src", imagePath);
+        reward.setAttribute("visible", "true");
 
-            status.innerText = `You got this!: ${imageName}`;
-            button.style.display = "none";
-        };
-
-        testImage.onerror = function () {
-            console.error("IMAGE LOAD FAILED:", imagePath);
-            status.innerText = `No images found ${imageName}`;
-            button.disabled = false;
-        };
-
-        testImage.src = imagePath;
+        status.innerText = `You got this!: ${imageName} (ส่อง QR Code)`;
+        button.style.display = "none";
 
     } catch (error) {
         console.error("API ERROR:", error);
@@ -72,3 +61,6 @@ button.addEventListener("click", async () => {
         button.disabled = false;
     }
 });
+```[cite: 1]
+
+---
