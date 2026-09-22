@@ -61,6 +61,3 @@ button.addEventListener("click", async () => {
         button.disabled = false;
     }
 });
-```[cite: 1]
-
----
