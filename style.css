@@ -22,6 +22,24 @@ a-scene {
     z-index: 1;
 }
 
+/* MindAR แทรก <video> เข้ามาแสดงภาพกล้องสด — ถ้าไม่บังคับ position/z-index
+   ตรงนี้ บางเบราว์เซอร์จะ render มันไว้หลังพื้นหลังดำของ body จนมองไม่เห็น
+   ทั้งที่กล้องเปิดอยู่จริง (สาเหตุที่ต้องสงสัยเป็นอันดับแรกตอนนี้) */
+video {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    z-index: 0 !important;
+}
+
+/* กันไว้เผื่อ canvas ของ three.js ไม่ transparent จริงตามที่ MindAR ควรตั้งให้
+   ถ้า canvas ทึบ มันจะบัง video อยู่ดีแม้ video จะ render ถูกต้องแล้ว */
+a-scene canvas {
+    background: transparent !important;
+}
+
 /* กล่องข้อความสถานะด้านบน */
 #status {
     position: fixed;
