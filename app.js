@@ -4,12 +4,9 @@ const status = document.getElementById("status");
 const button = document.getElementById("startBtn");
 const reward = document.getElementById("reward");
 const sceneEl = document.querySelector('a-scene');
+const targetEl = document.getElementById("rewardTarget");
 
 // --- AR system reference -------------------------------------------------
-// sceneEl.systems["mindar-image-system"] can be undefined until the scene
-// has actually finished loading (autoStart:false makes this worse, since
-// nothing forces initialization early). Grab it once, off the "loaded"
-// event, instead of hoping it exists whenever the button gets clicked.
 let arSystem = null;
 if (sceneEl.hasLoaded) {
     arSystem = sceneEl.systems["mindar-image-system"];
@@ -20,30 +17,60 @@ if (sceneEl.hasLoaded) {
 }
 
 let arStartTimeout = null;
+let assignedImage = null;   // ผลที่สุ่มได้ — เก็บไว้เฉยๆ ยังไม่บอกใคร
+let currentTicket = null;   // เผื่อจะต่อกับ Apps Script แบบ confirm ในอนาคต
+let revealed = false;       // กันไม่ให้ข้อความสลับไปมาเวลา target หลุด/เจอซ้ำ
+
+function resetForNewAttempt() {
+    assignedImage = null;
+    currentTicket = null;
+    revealed = false;
+    reward.setAttribute("visible", "false");
+}
 
 function onArReady() {
     clearTimeout(arStartTimeout);
-    status.innerText = status.innerText.replace(" — starting camera…", "");
-    button.style.display = "none";
+    if (!revealed) {
+        status.innerText = "Camera ready — point it at the marker";
+    }
 }
 
+// arError คือ event ที่โค้ดเดิมไม่เคยฟังเลย เป็นสาเหตุหลักที่กล้อง fail แบบเงียบๆ
 function onArError() {
     clearTimeout(arStartTimeout);
     status.innerText = "Camera failed to start. Check camera permission, close any other app/tab using the camera, then press Start AR again.";
-    reward.setAttribute("visible", "false");
     button.disabled = false;
     button.style.display = "";
+    resetForNewAttempt();
 }
 
-// THIS is the part that was missing. MindAR does not throw a JS error when
-// the camera/engine fails to start — it fires an "arError" event on the
-// scene. Nothing in the old app.js listened for it, and index.html has
-// uiError:"no" (which turns off MindAR's own built-in error message too).
-// Net result: any camera failure was 100% silent — black screen, and the
-// button was already hidden because the old code hid it right after
-// calling start(), without waiting to find out if start() actually worked.
+// นี่คือจุดเดียวที่ "รู้จริง" ว่ารูปกำลังแสดงอยู่บนจอ — MindAR ยิง event นี้
+// ก็ต่อเมื่อมัน track marker ล็อกได้จริงเท่านั้น ไม่ใช่แค่กล้องเปิดเฉยๆ
+function onTargetFound() {
+    console.log("targetFound — marker locked, image should be visible now");
+    reward.setAttribute("visible", "true");
+
+    if (assignedImage && !revealed) {
+        revealed = true;
+        status.innerText = `You got: ${assignedImage}! 🎉`;
+        button.style.display = "none";
+
+        // ถ้าอัปเดต Apps Script ให้มี action=confirm แล้ว (แยก reserve/confirm)
+        // ให้ปลดคอมเมนต์บรรทัดนี้ — จะ mark slot ว่า "ใช้จริง" เฉพาะตอนเห็นรูป
+        // จริงๆ เท่านั้น แทนที่จะ burn slot ตั้งแต่ตอนกดปุ่ม
+        // if (currentTicket) fetchJSONP(`${API}?action=confirm&ticket=${currentTicket}`).catch(console.error);
+    }
+}
+
+function onTargetLost() {
+    console.log("targetLost — tracking หลุด");
+    // ไม่ reset ข้อความถ้าเปิดเผยไปแล้ว กันไม่ให้กระพริบตอนมือสั่น
+}
+
 sceneEl.addEventListener("arReady", onArReady);
 sceneEl.addEventListener("arError", onArError);
+targetEl.addEventListener("targetFound", onTargetFound);
+targetEl.addEventListener("targetLost", onTargetLost);
 
 function fetchJSONP(url) {
     return new Promise((resolve, reject) => {
@@ -68,6 +95,7 @@ function fetchJSONP(url) {
 button.addEventListener("click", async () => {
     status.innerText = "Random Group...";
     button.disabled = true;
+    resetForNewAttempt();
 
     if (!arSystem) {
         status.innerText = "AR isn't ready yet, wait a second and try again.";
@@ -89,16 +117,16 @@ button.addEventListener("click", async () => {
         const imagePath = `./images/${imageName}.png`;
         console.log("Image path to load:", imagePath);
 
+        // ตั้งค่ารูปไว้ล่วงหน้า (โหลด texture รอไว้) แต่ "ไม่เปิดเผย" อะไรเลย
+        // จนกว่า onTargetFound จะยืนยันว่าเจอ marker จริง
+        assignedImage = imageName;
+        currentTicket = data.ticket;
         reward.setAttribute("src", imagePath);
-        reward.setAttribute("visible", "true");
-        status.innerText = `You got: ${imageName} — starting camera…`;
 
-        // Start the AR engine, but don't declare victory yet — onArReady /
-        // onArError (registered above) decide what actually happened.
+        status.innerText = "Starting camera...";
         arSystem.start();
 
-        // Safety net so a rare stuck state doesn't leave the user frozen
-        // on "starting camera..." forever with no way to retry.
+        // กันค้างถ้ากล้องบูทช้าผิดปกติ
         arStartTimeout = setTimeout(() => {
             status.innerText = "Camera is taking too long to start. Reload the page and try again.";
             button.disabled = false;
