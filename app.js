@@ -1,15 +1,17 @@
-* {
+/* บังคับให้วิดีโอสตรีมของกล้องแสดงผลเต็มจอและอยู่ด้านหลังสุด */
+body {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    overflow: hidden;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-    background: transparent; /* เปลี่ยนเป็นโปร่งใส */
+#mindar-video {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    z-index: 0 !important;
 }
 
 a-scene {
@@ -17,42 +19,6 @@ a-scene {
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-}
-
-#status {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.75);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 14px;
-    font-size: 15px;
-    z-index: 9999;
-    backdrop-filter: blur(10px);
-    text-align: center;
-    max-width: 90%;
-}
-
-#startBtn {
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: none;
-    border-radius: 999px;
-    padding: 14px 32px;
-    background: #2563eb;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 9999;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-}
-
-#startBtn:hover {
-    background: #1d4ed8;
+    z-index: 2;
+    background: transparent !important;
 }
