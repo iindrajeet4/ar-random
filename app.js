@@ -1,56 +1,58 @@
-const API = "https://script.google.com/macros/s/AKfycbyeD0pjO7uSQmnhjRBr1qFvhwsnubtXdM4IYNk0U-MQcfDNPO6O48mfUnuWiMslgaVy/exec";
-const PROXY_API = `https://api.allorigins.win/raw?url=${encodeURIComponent(API)}`;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-const status = document.getElementById("status");
-const button = document.getElementById("startBtn");
-const reward = document.getElementById("reward");
-const sceneEl = document.querySelector('a-scene');
-const targetEl = document.getElementById("ar-target");
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: transparent; /* เปลี่ยนเป็นโปร่งใส */
+}
 
-let hasFetched = false;
+a-scene {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
 
-// 1. Click button to start AR camera immediately
-button.addEventListener("click", () => {
-    status.innerText = "Opening camera... Please scan the marker";
-    button.style.display = "none";
+#status {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-size: 15px;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+    text-align: center;
+    max-width: 90%;
+}
 
-    if (sceneEl && sceneEl.systems["mindar-image-system"]) {
-        sceneEl.systems["mindar-image-system"].start();
-    }
-});
+#startBtn {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    border-radius: 999px;
+    padding: 14px 32px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
 
-// 2. Fetch random reward from Google Sheets ONLY when marker is found
-targetEl.addEventListener("targetFound", async () => {
-    if (hasFetched) return;
-    hasFetched = true;
-
-    status.innerText = "Randomizing your reward...";
-
-    try {
-        const response = await fetch(PROXY_API);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("API Data:", data);
-
-        if (!data.success) {
-            status.innerText = (data.message === "FULL") ? "30 Participants Completed" : data.message;
-            return;
-        }
-
-        const imageName = String(data.image).trim().toUpperCase();
-        const imagePath = `./images/${imageName}.png`;
-
-        reward.setAttribute("src", imagePath);
-        reward.setAttribute("visible", "true");
-
-        status.innerText = `Congratulations! You got: ${imageName}`;
-
-    } catch (error) {
-        console.error("API ERROR:", error);
-        status.innerText = "Unable to connect to the random system.";
-        hasFetched = false;
-    }
-});
+#startBtn:hover {
+    background: #1d4ed8;
+}
