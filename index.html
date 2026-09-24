@@ -6,7 +6,7 @@
     <title>AR Random Reward</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- A-Frame and MindAR for WebAR -->
+    <!-- A-Frame และ MindAR สำหรับ WebAR -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
@@ -14,24 +14,25 @@
 </head>
 <body>
 
-    <div id="status">Please click the button to open AR camera</div>
+    <div id="status">Press the button to start AR</div>
 
     <button id="startBtn">
         Start AR
     </button>
 
-    <!-- AR Scene (ปรับค่า mindar-image ให้ระบบจัดการกล้องและ UI อัตโนมัติ) -->
+    <!-- AR Scene (เปลี่ยนมาโหลดไฟล์ targets.mind สำหรับสแกน QR Code) -->
     <a-scene 
-        mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;" 
+        mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiError: no; uiScanning: yes;" 
         color-space="sRGB" 
-        renderer="colorManagement: true, physicallyCorrectLights, alpha: true" 
+        renderer="colorManagement: true, physicallyCorrectLights" 
         vr-mode-ui="enabled: false" 
         device-orientation-permission-ui="enabled: false">
         
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <!-- AR Target Entity -->
-        <a-entity id="ar-target" mindar-image-target="targetIndex: 0">
+        <!-- เป้าหมายการสแกน (Target Index 0) — เพิ่ม id="rewardTarget" เพื่อให้ app.js
+             ฟัง event targetFound / targetLost ได้ (เดิมไม่มี id เลย เกาะ event ไม่ได้) -->
+        <a-entity id="rewardTarget" mindar-image-target="targetIndex: 0">
             <a-image
                 id="reward"
                 position="0 0 0"
