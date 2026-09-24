@@ -1,63 +1,56 @@
 const API = "https://script.google.com/macros/s/AKfycbyeD0pjO7uSQmnhjRBr1qFvhwsnubtXdM4IYNk0U-MQcfDNPO6O48mfUnuWiMslgaVy/exec";
+const PROXY_API = `https://api.allorigins.win/raw?url=${encodeURIComponent(API)}`;
 
 const status = document.getElementById("status");
 const button = document.getElementById("startBtn");
 const reward = document.getElementById("reward");
 const sceneEl = document.querySelector('a-scene');
+const targetEl = document.getElementById("ar-target");
 
-// ฟังก์ชัน JSONP สำหรับดึงข้อมูลจาก Google Apps Script ข้ามโดเมน
-function fetchJSONP(url) {
-    return new Promise((resolve, reject) => {
-        const callbackName = 'gas_cb_' + Math.random().toString(36).substring(2, 9);
-        window[callbackName] = function(data) {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            resolve(data);
-        };
+let hasFetched = false;
 
-        const script = document.createElement('script');
-        script.src = `${url}?callback=${callbackName}`;
-        script.onerror = function() {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            reject(new Error("Network error or script load failed"));
-        };
-        document.body.appendChild(script);
-    });
-}
+// 1. Click button to start AR camera immediately
+button.addEventListener("click", () => {
+    status.innerText = "Opening camera... Please scan the marker";
+    button.style.display = "none";
 
-button.addEventListener("click", async () => {
-    status.innerText = "Random Group...";
-    button.disabled = true;
+    if (sceneEl && sceneEl.systems["mindar-image-system"]) {
+        sceneEl.systems["mindar-image-system"].start();
+    }
+});
+
+// 2. Fetch random reward from Google Sheets ONLY when marker is found
+targetEl.addEventListener("targetFound", async () => {
+    if (hasFetched) return;
+    hasFetched = true;
+
+    status.innerText = "Randomizing your reward...";
 
     try {
-        const data = await fetchJSONP(API);
+        const response = await fetch(PROXY_API);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
         console.log("API Data:", data);
 
         if (!data.success) {
-            status.innerText = (data.message === "FULL") ? "30 People completed" : data.message;
-            button.disabled = false;
+            status.innerText = (data.message === "FULL") ? "30 Participants Completed" : data.message;
             return;
         }
 
         const imageName = String(data.image).trim().toUpperCase();
         const imagePath = `./images/${imageName}.png`;
 
-        console.log("Image path to load:", imagePath);
-
-        // 1. สั่งเปิดกล้องและระบบ AR ทันทีที่สุ่มข้อมูลสำเร็จ (ไม่รอโหลดรูปภาพ)
-        sceneEl.systems["mindar-image-system"].start();
-
-        // 2. ตั้งค่ารูปภาพเข้าไปใน A-Frame รอด้านหน้ากล้อง
         reward.setAttribute("src", imagePath);
         reward.setAttribute("visible", "true");
 
-        status.innerText = `You got this!: ${imageName} (ส่อง QR Code)`;
-        button.style.display = "none";
+        status.innerText = `Congratulations! You got: ${imageName}`;
 
     } catch (error) {
         console.error("API ERROR:", error);
         status.innerText = "Unable to connect to the random system.";
-        button.disabled = false;
+        hasFetched = false;
     }
 });
