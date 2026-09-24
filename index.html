@@ -6,7 +6,7 @@
     <title>AR Random Reward</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- A-Frame และ MindAR สำหรับ WebAR -->
+    <!-- A-Frame and MindAR for WebAR -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
@@ -14,13 +14,13 @@
 </head>
 <body>
 
-    <div id="status">Press the button to start AR</div>
+    <div id="status">Please click the button to open AR camera</div>
 
     <button id="startBtn">
         Start AR
     </button>
 
-    <!-- AR Scene (เปลี่ยนมาโหลดไฟล์ targets.mind สำหรับสแกน QR Code) -->
+    <!-- AR Scene -->
     <a-scene 
         mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiError: no; uiScanning: yes;" 
         color-space="sRGB" 
@@ -30,8 +30,8 @@
         
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <!-- เป้าหมายการสแกน (Target Index 0) เมื่อกล้องส่องเจอ QR Code รูปภาพรางวัลจะปรากฏขึ้นตรงนี้ -->
-        <a-entity mindar-image-target="targetIndex: 0">
+        <!-- AR Target Entity -->
+        <a-entity id="ar-target" mindar-image-target="targetIndex: 0">
             <a-image
                 id="reward"
                 position="0 0 0"
