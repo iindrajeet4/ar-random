@@ -20,11 +20,11 @@
         Start AR
     </button>
 
-    <!-- AR Scene -->
+    <!-- AR Scene (เพิ่ม alpha: true ตรง renderer เพื่อให้มองเห็นกล้องทะลุผ่านฉากหลังมาได้) -->
     <a-scene 
         mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: no; uiError: no; uiScanning: yes;" 
         color-space="sRGB" 
-        renderer="colorManagement: true, physicallyCorrectLights" 
+        renderer="colorManagement: true, physicallyCorrectLights, alpha: true" 
         vr-mode-ui="enabled: false" 
         device-orientation-permission-ui="enabled: false">
         
