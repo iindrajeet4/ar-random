@@ -108,7 +108,7 @@ button.addEventListener("click", async () => {
         console.log("API Data:", data);
 
         if (!data.success) {
-            status.innerText = (data.message === "FULL") ? "30 People completed" : data.message;
+            status.innerText = (data.message === "FULL") ? "25 People completed" : data.message;
             button.disabled = false;
             return;
         }
