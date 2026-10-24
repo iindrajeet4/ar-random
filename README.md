@@ -1,13 +1,13 @@
 # 🎲 AR Random Reward System
 
-A free WebAR project that uses **one QR Code** to randomly distribute **5 AR images** equally among **30 participants** (6 people per image).
+A free WebAR project that uses **one QR Code** to randomly distribute **5 AR images** equally among **25 participants** (5 people per image).
 
 ## ✨ Features
 
 - ✅ One QR Code for everyone
 - ✅ Random distribution with equal quota
 - ✅ 5 different reward images (A–E)
-- ✅ 30 total participants (6 per image)
+- ✅ 25 total participants (5 per image)
 - ✅ Google Sheets as the database
 - ✅ Google Apps Script as a free API
 - ✅ GitHub Pages for free hosting
@@ -75,12 +75,12 @@ https://USERNAME.github.io/ar-random/
 
 | Image | Quota |
 |--------|------:|
-| A | 6 |
-| B | 6 |
-| C | 6 |
-| D | 6 |
-| E | 6 |
-| **Total** | **30** |
+| A | 5 |
+| B | 5 |
+| C | 5 |
+| D | 5 |
+| E | 5 |
+| **Total** | **25** |
 
 The allocation is handled by Google Apps Script, ensuring each image is assigned exactly six times.
 
