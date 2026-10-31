@@ -205,14 +205,14 @@ button.addEventListener("click", async () => {
 
 
         // ========================================================
-        // ถ้าครบ 25 คนแล้ว
+        // ถ้าครบ 20 คนแล้ว
         // ========================================================
 
         if (!data.success) {
 
             status.innerText =
                 (data.message === "FULL")
-                    ? "25 People completed"
+                    ? "20 People completed"
                     : data.message;
 
             button.disabled = false;
